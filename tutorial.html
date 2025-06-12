@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OEMDX - 化粧品OEMプラットフォーム</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px 20px;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 5px;
+            font-weight: bold;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: #ff6b6b;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .step.completed {
+            background: #27ae60;
+            color: white;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .tab-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .tab-button, .card-option {
+            border: 2px solid #e0e0e0;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .tab-button:hover, .card-option:hover {
+            border-color: #ff6b6b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,107,107,0.2);
+        }
+
+        .tab-button.selected, .card-option.selected {
+            border-color: #ff6b6b;
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .category-card:hover {
+            border-color: #ff6b6b;
+            transform: translateY(-2px);
+        }
+
+        .category-card.selected {
+            border-color: #ff6b6b;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        .category-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+
+        .price-preview {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .container-slider {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 0;
+            margin: 15px 0;
+        }
+
+        .container-option {
+            min-width: 100px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .container-option:hover {
+            border-color: #ff6b6b;
+        }
+
+        .container-option.selected {
+            border-color: #afbbf8;
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .estimate-card {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .estimate-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .estimate-row:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 18px;
+            color: #27ae60;
+        }
+
+        .button {
+            width: 100%;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255,107,107,0.3);
+        }
+
+        .button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-button {
+            background: #74b9ff;
+            margin-right: 10px;
+            width: 48%;
+            margin-top: 0;
+        }
+
+        .next-button {
+            width: 48%;
+            margin-top: 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .success-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            font-size: 60px;
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+
+        .patent-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #2d3436;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .lawyer-badge {
+            background: #0984e3;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 10px 0;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="patent-badge">特許出願中</div>
+        
+        <div class="header">
+            <div class="logo">OEMDX</div>
+            <div class="subtitle">誰でも簡単に化粧品OEMを始められる</div>
+        </div>
+
+        <div class="content">
+            <div class="step-indicator">
+                <div class="step active" id="step1">①</div>
+                <div class="step" id="step2">②</div>
+                <div class="step" id="step3">③</div>
+                <div class="step" id="step4">④</div>
+                <div class="step" id="step5">⑤</div>
+            </div>
+
+            <!-- Screen 1: Top -->
+            <div class="screen active" id="screen1">
+                <h2>まずはじめに</h2>
+                <div class="tab-group">
+                    <div class="tab-button" onclick="selectTab('new')">
+                        <div style="font-size: 20px; margin-bottom: 5px;">🆕</div>
+                        新規相談
+                    </div>
+                    <div class="tab-button" onclick="selectTab('repeat')">
+                        <div style="font-size: 20px; margin-bottom: 5px;">🔄</div>
+                        リピート発注
+                    </div>
+                </div>
+                <div class="help-text">初回のお客様は「新規相談」をお選びください</div>
+            </div>
+
+            <!-- Screen 2: Category -->
+            <div class="screen" id="screen2">
+                <h2>製品カテゴリを選択</h2>
+                <div class="category-grid">
+                    <div class="category-card" onclick="selectCategory('serum')">
+                        <div class="category-icon">💧</div>
+                        <div>美容液</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('cream')">
+                        <div class="category-icon">🧴</div>
+                        <div>クリーム</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('sunscreen')">
+                        <div class="category-icon">☀️</div>
+                        <div>日焼け止め</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('mask')">
+                        <div class="category-icon">😷</div>
+                        <div>パック</div>
+                    </div>
+                </div>
+                <div class="help-text">迷ったら用途ベースで選択してください</div>
+                <div class="button-group">
+                    <button class="button back-button" onclick="previousStep()">戻る</button>
+                    <button class="button next-button" onclick="nextStep()" disabled id="categoryNext">次へ</button>
+                </div>
+            </div>
+
+            <!-- Screen 3: Quantity -->
+            <div class="screen" id="screen3">
+                <h2>ロット・数量</h2>
+                <div class="input-group">
+                    <label>希望数量</label>
+                    <select onchange="updatePrice()">
+                        <option>300個（最小ロット）</option>
+                        <option>500個</option>
+                        <option>1,000個</option>
+                        <option>2,000個</option>
+                        <option>その他</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>試作について</label>
+                    <div class="tab-group">
+                        <div class="card-option" onclick="selectOption(this, 'trial')">
+                            試作あり<br><small>+20,000円</small>
+                        </div>
+                        <div class="card-option selected" onclick="selectOption(this, 'no-trial')">
+                            試作なし
+                        </div>
+                    </div>
+                </div>
+                <div class="price-preview">
+                    <div>💰 参考単価目安</div>
+                    <div style="font-size: 20px; font-weight: bold; margin-top: 5px;">@180円〜220円</div>
+                </div>
+                <div class="button-group">
+                    <button class="button back-button" onclick="previousStep()">戻る</button>
+                    <button class="button next-button" onclick="nextStep()">次へ</button>
+                </div>
+            </div>
+
+            <!-- Screen 4: Container -->
+            <div class="screen" id="screen4">
+                <h2>容量・容器の選択</h2>
+                <div class="input-group">
+                    <label>容量</label>
+                    <div class="tab-group">
+                        <div class="card-option selected" onclick="selectOption(this, '30ml')">30ml</div>
+                        <div class="card-option" onclick="selectOption(this, '50ml')">50ml</div>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>容器タイプ</label>
+                    <div class="container-slider">
+                        <div class="container-option selected" onclick="selectContainer(this)">
+                            <div style="font-size: 20px;">🧴</div>
+                            <div style="font-size: 12px;">ポンプ</div>
+                        </div>
+                        <div class="container-option" onclick="selectContainer(this)">
+                            <div style="font-size: 20px;">📦</div>
+                            <div style="font-size: 12px;">エアレス</div>
+                        </div>
+                        <div class="container-option" onclick="selectContainer(this)">
+                            <div style="font-size: 20px;">🍼</div>
+                            <div style="font-size: 12px;">ドロッパー</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="button back-button" onclick="previousStep()">戻る</button>
+                    <button class="button next-button" onclick="nextStep()">次へ</button>
+                </div>
+            </div>
+
+            <!-- Screen 5: Requirements -->
+            <div class="screen" id="screen5">
+                <h2>要望・懸念点</h2>
+                <div class="input-group">
+                    <label>ご要望やこだわりをお聞かせください</label>
+                    <textarea rows="4" placeholder="例：毛穴ケア訴求、韓国OEM希望、オーガニック成分使用など"></textarea>
+                </div>
+                <div class="input-group">
+                    <label>お名前</label>
+                    <input type="text" placeholder="山田太郎">
+                </div>
+                <div class="input-group">
+                    <label>会社名（任意）</label>
+                    <input type="text" placeholder="株式会社○○">
+                </div>
+                <div class="button-group">
+                    <button class="button back-button" onclick="previousStep()">戻る</button>
+                    <button class="button next-button" onclick="nextStep()">見積もり確認</button>
+                </div>
+            </div>
+
+            <!-- Screen 6: Estimate -->
+            <div class="screen" id="screen6">
+                <h2>仮見積もり確認</h2>
+                <div class="lawyer-badge">🏛️ 弁護士監修済み契約書使用</div>
+                <div class="estimate-card">
+                    <div class="estimate-row">
+                        <span>美容液 30ml × 300個</span>
+                        <span>54,000円</span>
+                    </div>
+                    <div class="estimate-row">
+                        <span>ポンプ容器</span>
+                        <span>18,000円</span>
+                    </div>
+                    <div class="estimate-row">
+                        <span>デザイン・印刷</span>
+                        <span>12,000円</span>
+                    </div>
+                    <div class="estimate-row">
+                        <span>配送費</span>
+                        <span>3,000円</span>
+                    </div>
+                    <div class="estimate-row">
+                        <span>合計（税込）</span>
+                        <span>87,000円</span>
+                    </div>
+                </div>
+                <div style="background: #e8f8f5; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                    <div style="font-weight: bold; color: #27ae60;">📅 予定納期：45日</div>
+                    <div style="font-size: 12px; color: #555; margin-top: 5px;">※正式見積もりは24時間以内にお送りします</div>
+                </div>
+                <button class="button" onclick="submitOrder()">この内容で相談する</button>
+            </div>
+
+            <!-- Screen 7: Success -->
+            <div class="screen" id="screen7">
+                <div class="success-screen">
+                    <div class="success-icon">✅</div>
+                    <h2>相談内容を受付しました</h2>
+                    <p style="color: #555; margin: 20px 0;">担当者からの返答をお待ちください。<br>24時間以内にご連絡いたします。</p>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 20px 0;">
+                        <div style="font-size: 14px; color: #555;">
+                            📱 LINEでも進捗確認できます<br>
+                            📧 詳細はメールでもお送りします
+                        </div>
+                    </div>
+                    <button class="button" onclick="resetForm()">新しい相談を始める</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedData = {};
+
+        function selectTab(type) {
+            const tabs = document.querySelectorAll('.tab-button');
+            tabs.forEach(tab => tab.classList.remove('selected'));
+            event.target.closest('.tab-button').classList.add('selected');
+            
+            if(type === 'new') {
+                setTimeout(() => nextStep(), 500);
+            }
+        }
+
+        function selectCategory(category) {
+            const cards = document.querySelectorAll('.category-card');
+            cards.forEach(card => card.classList.remove('selected'));
+            event.target.closest('.category-card').classList.add('selected');
+            
+            selectedData.category = category;
+            document.getElementById('categoryNext').disabled = false;
+        }
+
+        function selectOption(element, option) {
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.card-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function selectContainer(element) {
+            const containers = document.querySelectorAll('.container-option');
+            containers.forEach(container => container.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function updatePrice() {
+            // Price update logic here
+        }
+
+        function nextStep() {
+            if(currentStep < 7) {
+                document.getElementById(`screen${currentStep}`).classList.remove('active');
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                document.getElementById(`step${currentStep}`).classList.add('completed');
+                
+                currentStep++;
+                
+                document.getElementById(`screen${currentStep}`).classList.add('active');
+                if(currentStep <= 5) {
+                    document.getElementById(`step${currentStep}`).classList.add('active');
+                }
+            }
+        }
+
+        function previousStep() {
+            if(currentStep > 1) {
+                document.getElementById(`screen${currentStep}`).classList.remove('active');
+                if(currentStep <= 5) {
+                    document.getElementById(`step${currentStep}`).classList.remove('active');
+                }
+                
+                currentStep--;
+                
+                document.getElementById(`screen${currentStep}`).classList.add('active');
+                document.getElementById(`step${currentStep}`).classList.remove('completed');
+                document.getElementById(`step${currentStep}`).classList.add('active');
+            }
+        }
+
+        function submitOrder() {
+            // Submit logic here
+            nextStep();
+        }
+
+        function resetForm() {
+            currentStep = 1;
+            selectedData = {};
+            
+            // Reset all screens
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+            
+            document.getElementById('screen1').classList.add('active');
+            document.getElementById('step1').classList.add('active');
+            
+            // Reset selections
+            document.querySelectorAll('.selected').forEach(element => {
+                element.classList.remove('selected');
+            });
+            
+            document.getElementById('categoryNext').disabled = true;
+        }
+    </script>
+</body>
+</html>
