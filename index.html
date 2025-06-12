@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OEMDX ログイン</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: linear-gradient(to top left, #726fff, #8f74f9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    p {
+      color: #666;
+      margin: 10px 0 30px;
+    }
+
+    button, .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .btn-line {
+      background-color: #00c300;
+      color: white;
+    }
+
+    .btn-mail {
+      background: #f5f5f5;
+      color: #222;
+      border: 1px solid #ddd;
+    }
+
+    .link {
+      color: #5570ff;
+      cursor: pointer;
+      margin-top: 10px;
+      display: block;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    .btn-primary {
+      background-color: #6b7dfc;
+      color: white;
+      margin-top: 20px;
+    }
+
+    .back {
+      text-align: left;
+      color: #5570ff;
+      font-size: 14px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- ログイン選択画面 -->
+  <div class="card" id="loginSelect">
+    <h1>OEMDX</h1>
+    <p>OEM製品製造プラットフォーム</p>
+    <button class="btn btn-line">
+      <img width="20" height="20" src="https://img.icons8.com/color/100/line-me.png" alt="line-me"/>
+      LINEでログイン
+    </button>
+    <button class="btn btn-mail" onclick="showForm('emailLogin')">✉️ メールアドレスでログイン</button>
+    <hr style="margin: 20px 0;" />
+    <a class="link" onclick="showForm('signup')">新規登録はこちら</a>
+    <a class="link" onclick="showForm('reset')">ログインできない方はこちら</a>
+  </div>
+
+  <!-- メールログイン -->
+  <div class="card hidden" id="emailLogin">
+    <div class="back" onclick="showForm('loginSelect')">← 戻る</div>
+    <h1>メールでログイン</h1>
+    <input type="email" placeholder="メールアドレス" />
+    <input type="password" placeholder="パスワード" />
+    <button class="btn btn-primary" onclick="login()">ログイン</button>
+    <a class="link" onclick="showForm('reset')">パスワードを忘れた方</a>
+  </div>
+
+  <!-- 新規登録 -->
+  <div class="card hidden" id="signup">
+    <div class="back" onclick="showForm('loginSelect')">← 戻る</div>
+    <h1>新規登録</h1>
+    <input type="text" placeholder="会社名" />
+    <input type="text" placeholder="お名前" />
+    <input type="email" placeholder="メールアドレス" />
+    <input type="tel" placeholder="電話番号（例：090-1234-5678）" />
+    <button class="btn btn-primary" onclick="register()">SMS認証で登録</button>
+  </div>
+
+  <!-- パスワード再発行 -->
+  <div class="card hidden" id="reset">
+    <div class="back" onclick="showForm('loginSelect')">← 戻る</div>
+    <h1>パスワード再発行</h1>
+    <input type="email" placeholder="登録済みメールアドレス" />
+    <button class="btn btn-primary">再発行メールを送信</button>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    function showForm(id) {
+      const forms = ["loginSelect", "emailLogin", "signup", "reset"];
+      forms.forEach(formId => {
+        document.getElementById(formId).classList.add("hidden");
+      });
+      document.getElementById(id).classList.remove("hidden");
+    }
+
+    function login() {
+      // ログイン後の遷移先ページ
+      window.location.href = "home.html";
+    }
+
+    function register() {
+      // 登録後の遷移先ページ
+      window.location.href = "home.html";
+    }
+  </script>
+</body>
+</html>
